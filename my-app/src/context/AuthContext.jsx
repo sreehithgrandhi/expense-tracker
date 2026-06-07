@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react"
+import { createContext, useContext, useState, useCallback, useEffect } from "react"
 
 const AuthContext = createContext(null)
 
@@ -13,6 +13,28 @@ export function AuthProvider({ children }) {
     })
 
     const [token, setToken] = useState(() => localStorage.getItem("spendly_token") || null)
+
+    const logout = useCallback(() => {
+        localStorage.removeItem("spendly_token")
+        localStorage.removeItem("spendly_user")
+        setToken(null)
+        setUser(null)
+    }, [])
+
+    // Validate token on app startup
+    useEffect(() => {
+        if (!token) return
+        fetch(`${API}/expenses/months`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        })
+            .then(res => {
+                if (res.status === 401 || res.status === 403) {
+                    console.warn("Token expired or invalid, logging out")
+                    logout()
+                }
+            })
+            .catch(() => { /* backend offline, keep token */ })
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     const login = useCallback(async (email, password) => {
         const res = await fetch(`${API}/auth/login`, {
@@ -42,13 +64,6 @@ export function AuthProvider({ children }) {
         setToken(data.token)
         setUser(data.user)
         return data
-    }, [])
-
-    const logout = useCallback(() => {
-        localStorage.removeItem("spendly_token")
-        localStorage.removeItem("spendly_user")
-        setToken(null)
-        setUser(null)
     }, [])
 
     const updateProfile = useCallback(async (updates) => {
