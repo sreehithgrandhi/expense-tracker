@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from "rea
 
 const AuthContext = createContext(null)
 
-const API = "http://localhost:3000"
+const API = "https://expense-backend-qh3n.onrender.com"
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(() => {

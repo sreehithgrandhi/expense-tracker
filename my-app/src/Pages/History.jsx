@@ -31,7 +31,7 @@ function History() {
             const params = filterMonth === 0
                 ? ""
                 : `?month=${filterMonth}&year=${now.getFullYear()}`
-            const data = await fetch(`http://localhost:3000/expenses${params}`, { headers }).then(r => r.json())
+            const data = await fetch(`https://expense-backend-qh3n.onrender.com/expenses${params}`, { headers }).then(r => r.json())
             setExpenses(Array.isArray(data) ? data : [])
         } catch (e) {
             console.error(e)
@@ -45,7 +45,10 @@ function History() {
     const handleDelete = async (id) => {
         const token = localStorage.getItem("spendly_token")
         const headers = token ? { "Authorization": `Bearer ${token}` } : {}
-        await fetch(`http://localhost:3000/expenses/${id}`, { method: "DELETE", headers })
+        await fetch(`https://expense-backend-qh3n.onrender.com/expenses/${id}`, {
+            method: "DELETE",
+            headers
+        })
         setConfirmDeleteId(null)
         fetchExpenses()
     }
@@ -125,7 +128,7 @@ function History() {
                                 <span className="expense-amount">{fmt(expense.amount)}</span>
                                 {confirmDeleteId === expense.id ? (
                                     <span style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
-                                        <span style={{ fontSize: "0.78rem", color: "var(--text-muted)"}}>Delete?</span>
+                                        <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>Delete?</span>
                                         <button
                                             className="btn btn-danger"
                                             onClick={() => handleDelete(expense.id)}

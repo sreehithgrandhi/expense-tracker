@@ -65,7 +65,7 @@ function AddExpense() {
                 "Content-Type": "application/json",
                 ...(token ? { "Authorization": `Bearer ${token}` } : {})
             }
-            const res = await fetch("http://localhost:3000/expenses", {
+            const res = await fetch("https://expense-backend-qh3n.onrender.com/expenses", {
                 method: "POST",
                 headers,
                 body: JSON.stringify({ amount: Number(amount), category: selectedCat.value, date, note }),

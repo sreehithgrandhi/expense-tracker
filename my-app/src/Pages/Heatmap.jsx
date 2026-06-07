@@ -35,7 +35,7 @@ function Heatmap() {
         setLoading(true)
         const token = localStorage.getItem("spendly_token")
         const headers = token ? { "Authorization": `Bearer ${token}` } : {}
-        fetch(`http://localhost:3000/expenses/by-date?month=${viewMonth + 1}&year=${viewYear}`, { headers })
+        fetch(`https://expense-backend-qh3n.onrender.com/expenses/by-date?month=${viewMonth + 1}&year=${viewYear}`, { headers })
             .then(r => r.json())
             .then(data => setByDate(Array.isArray(data) ? data : []))
             .catch(console.error)

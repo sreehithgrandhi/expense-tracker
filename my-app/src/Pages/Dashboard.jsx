@@ -33,7 +33,7 @@ function Dashboard() {
     useEffect(() => {
         const token = localStorage.getItem("spendly_token")
         const headers = token ? { "Authorization": `Bearer ${token}` } : {}
-        fetch("http://localhost:3000/expenses/months", { headers })
+        fetch("https://expense-backend-qh3n.onrender.com/expenses/months", { headers })
             .then(r => r.json())
             .then(data => {
                 setAvailableMonths(data || [])
@@ -52,8 +52,8 @@ function Dashboard() {
         const params = `?month=${month}&year=${year}`
         setLoading(true)
         Promise.all([
-            fetch(`http://localhost:3000/expenses/by-category${params}`, { headers }).then(r => r.json()),
-            fetch(`http://localhost:3000/expenses${params}`, { headers }).then(r => r.json()),
+            fetch(`https://expense-backend-qh3n.onrender.com/expenses/by-category${params}`, { headers }).then(r => r.json()),
+            fetch(`https://expense-backend-qh3n.onrender.com/expenses${params}`, { headers }).then(r => r.json()),
         ])
             .then(([cats, exps]) => { setByCategory(cats || []); setAllExpenses(exps || []) })
             .catch(console.error)
