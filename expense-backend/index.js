@@ -23,12 +23,26 @@ if (!MONGO_URI || !JWT_SECRET) {
     process.exit(1)
 }
 
+// Helper to parse database name from URI
+const getDbName = (uri) => {
+    try {
+        const match = uri.match(/\/([^/?]+)(\?|$)/)
+        return match ? match[1] : null
+    } catch (e) {
+        return null
+    }
+}
+
+const dbName = getDbName(MONGO_URI) || "spendly"
+
 // Connect to MongoDB
-mongoose.connect(MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
+mongoose.connect(MONGO_URI, { dbName })
+    .then(() => {
+        console.log("Connected to MongoDB")
+        console.log("Database:", mongoose.connection.db.databaseName)
+    })
     .catch(err => {
         console.error("MongoDB connection error:", err)
-        process.exit(1)
     })
 
 // Helper to format expense response
