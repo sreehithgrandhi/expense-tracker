@@ -22,6 +22,11 @@ function History() {
     const [filterMonth, setFilterMonth] = useState(now.getMonth() + 1)
     const [filterCat, setFilterCat] = useState("All")
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+    const [expandedNotes, setExpandedNotes] = useState({})
+
+    const toggleExpand = (id) => {
+        setExpandedNotes(prev => ({ ...prev, [id]: !prev[id] }))
+    }
 
     const fetchExpenses = useCallback(async () => {
         setLoading(true)
@@ -121,9 +126,12 @@ function History() {
                                 >
                                     {expense.category}
                                 </span>
-                                <span className="expense-note">
-                                    {expense.note || <em style={{ color: "var(--text-muted)" }}>No note</em>}
-                                </span>
+                                 <span
+                                     className={`expense-note ${expandedNotes[expense.id] ? "expanded" : ""}`}
+                                     onClick={() => toggleExpand(expense.id)}
+                                 >
+                                     {expense.note || <em style={{ color: "var(--text-muted)", cursor: "default" }}>No note</em>}
+                                 </span>
                                 <span className="expense-date">{formatDate(expense.date)}</span>
                                 <span className="expense-amount">{fmt(expense.amount)}</span>
                                 {confirmDeleteId === expense.id ? (

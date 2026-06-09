@@ -30,6 +30,11 @@ function Heatmap() {
     const [byDate, setByDate] = useState([])
     const [selectedDay, setSelectedDay] = useState(null)  // { date, total, expenses[] }
     const [loading, setLoading] = useState(true)
+    const [expandedNotes, setExpandedNotes] = useState({})
+
+    const toggleExpand = (id) => {
+        setExpandedNotes(prev => ({ ...prev, [id]: !prev[id] }))
+    }
 
     useEffect(() => {
         setLoading(true)
@@ -200,14 +205,27 @@ function Heatmap() {
                                 const cfg = CATEGORY_CONFIG[exp.category] || { color: "#6b7280", Icon: Package }
                                 const CatIcon = cfg.Icon
                                 return (
-                                    <div key={exp.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, border: "1px solid var(--border)" }}>
-                                        {CatIcon && <CatIcon size={15} color={cfg.color} strokeWidth={1.7} />}
-                                        <div style={{ flex: 1 }}>
-                                            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: 1 }}>{exp.category}</p>
-                                            {exp.note && <p style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{exp.note}</p>}
-                                        </div>
-                                        <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>{fmt(exp.amount)}</span>
-                                    </div>
+                                     <div key={exp.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, border: "1px solid var(--border)" }}>
+                                         {CatIcon && <CatIcon size={15} color={cfg.color} strokeWidth={1.7} style={{ flexShrink: 0 }} />}
+                                         <div style={{ flex: 1, minWidth: 0 }}>
+                                             <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: 1 }}>{exp.category}</p>
+                                             {exp.note && (
+                                                 <p
+                                                     className={`expense-note ${expandedNotes[exp.id] ? "expanded" : ""}`}
+                                                     onClick={() => toggleExpand(exp.id)}
+                                                     style={{
+                                                         fontSize: "0.8rem",
+                                                         color: "var(--text-muted)",
+                                                         cursor: "pointer",
+                                                         marginTop: 2
+                                                     }}
+                                                 >
+                                                     {exp.note}
+                                                 </p>
+                                             )}
+                                         </div>
+                                         <span style={{ fontWeight: 700, color: "var(--text-primary)", flexShrink: 0 }}>{fmt(exp.amount)}</span>
+                                     </div>
                                 )
                             })}
                         </div>

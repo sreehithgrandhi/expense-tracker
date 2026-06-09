@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import { useTheme } from "../context/ThemeContext"
 import { User, Mail, Lock, LogOut, ChevronLeft, Check, Shield, Bell, Palette } from "lucide-react"
 
 function Settings() {
     const { user, logout, updateProfile } = useAuth()
+    const { theme, toggleTheme } = useTheme()
     const navigate = useNavigate()
     const [name, setName] = useState(user?.name || "")
     const [email, setEmail] = useState(user?.email || "")
@@ -204,15 +206,24 @@ function Settings() {
                         <Palette size={15} color="var(--text-muted)" strokeWidth={1.7} />
                         <div>
                             <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Theme</p>
-                            <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Dark mode enabled</p>
+                            <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{theme === "dark" ? "Dark mode active" : "Light mode active"}</p>
                         </div>
                     </div>
-                    <span style={{
-                        padding: "3px 10px", borderRadius: 100,
-                        fontSize: "0.72rem", fontWeight: 600,
-                        background: "rgba(34,211,238,0.12)", color: "#22d3ee",
-                        border: "1px solid rgba(34,211,238,0.25)",
-                    }}>Active</span>
+                    <button
+                        onClick={toggleTheme}
+                        className="btn btn-ghost"
+                        id="theme-toggle-btn-settings"
+                        style={{
+                            padding: "6px 14px",
+                            fontSize: "0.78rem",
+                            borderRadius: 100,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                            fontWeight: 700,
+                        }}
+                    >
+                        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+                    </button>
                 </div>
             </div>
 

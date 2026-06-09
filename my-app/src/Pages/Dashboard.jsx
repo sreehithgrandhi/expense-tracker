@@ -86,14 +86,14 @@ function Dashboard() {
         <div className="page-container">
 
             {/* ── Header ── */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
+            <div className="dashboard-header">
                 <div>
                     <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.14em", color: TEAL, textTransform: "uppercase", marginBottom: 6 }}>
                         Financial Overview
                     </p>
                     <h1 style={{ margin: 0, fontSize: "1.9rem", fontWeight: 800 }}>Dashboard</h1>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div className="dashboard-header-controls">
                     <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", color: TEAL }}>
                         <span className="live-dot" />LIVE SYNC
                     </span>
@@ -102,7 +102,6 @@ function Dashboard() {
                         className="form-select"
                         value={`${year}-${month}`}
                         onChange={e => { const [y, m] = e.target.value.split("-").map(Number); setYear(y); setMonth(m) }}
-                        style={{ width: "auto", minWidth: 155 }}
                     >
                         {availableMonths.map(({ year: y, month: m }) => (
                             <option key={`${y}-${m}`} value={`${y}-${m}`}>{MONTH_NAMES[m]} {y}</option>
@@ -117,7 +116,7 @@ function Dashboard() {
             ) : (
                 <>
                     {/* ── 3 Stat Cards ── */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 20 }}>
+                    <div className="dashboard-stat-grid">
 
                         {/* Today's Spending */}
                         <div className="card stat-card">
@@ -171,7 +170,7 @@ function Dashboard() {
                     </div>
 
                     {/* ── Main Two-Column Layout ── */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20 }}>
+                    <div className="dashboard-main-layout">
 
                         {/* Left: Donut + Category Legend */}
                         <div className="card">
@@ -183,9 +182,9 @@ function Dashboard() {
                                     <p>Add some expenses to see your breakdown.</p>
                                 </div>
                             ) : (
-                                <div style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+                                <div className="dashboard-distribution-content">
                                     {/* Donut */}
-                                    <div style={{ position: "relative", flexShrink: 0 }}>
+                                    <div className="dashboard-chart-container">
                                         <ResponsiveContainer width={200} height={200}>
                                             <PieChart>
                                                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={3} dataKey="value" strokeWidth={0}>
@@ -201,7 +200,7 @@ function Dashboard() {
                                     </div>
 
                                     {/* Category legend */}
-                                    <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 28px" }}>
+                                    <div className="dashboard-category-legend">
                                         {byCategory.sort((a, b) => b.total - a.total).map(cat => {
                                             const cfg = CATEGORY_CONFIG[cat.category] || {}
                                             const CatIcon = cfg.Icon
