@@ -29,6 +29,7 @@ function Dashboard() {
     const [byCategory, setByCategory] = useState([])
     const [allExpenses, setAllExpenses] = useState([])
     const [loading, setLoading] = useState(true)
+    const [activeIndex, setActiveIndex] = useState(-1)
 
     useEffect(() => {
         const token = localStorage.getItem("spendly_token")
@@ -187,15 +188,41 @@ function Dashboard() {
                                     <div className="dashboard-chart-container">
                                         <ResponsiveContainer width={200} height={200}>
                                             <PieChart>
-                                                <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={3} dataKey="value" strokeWidth={0}>
-                                                    {pieData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                                                <Pie
+                                                    data={pieData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={90}
+                                                    paddingAngle={3}
+                                                    dataKey="value"
+                                                    strokeWidth={0}
+                                                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                                                    onMouseLeave={() => setActiveIndex(-1)}
+                                                    onClick={(_, index) => setActiveIndex(prev => prev === index ? -1 : index)}
+                                                >
+                                                    {pieData.map((entry, i) => (
+                                                        <Cell
+                                                            key={i}
+                                                            fill={entry.fill}
+                                                            style={{
+                                                                cursor: "pointer",
+                                                                outline: "none",
+                                                                transition: "opacity 0.2s ease",
+                                                                opacity: activeIndex === -1 || activeIndex === i ? 1 : 0.45,
+                                                            }}
+                                                        />
+                                                    ))}
                                                 </Pie>
-                                                <Tooltip content={<ChartTooltip />} />
                                             </PieChart>
                                         </ResponsiveContainer>
-                                        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", textAlign: "center", pointerEvents: "none" }}>
-                                            <p style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Total</p>
-                                            <p style={{ fontSize: "1.05rem", fontWeight: 800, color: "var(--text-primary)" }}>{fmt(grandTotal)}</p>
+                                        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", textAlign: "center", pointerEvents: "none", width: 110 }}>
+                                            <p style={{ fontSize: "0.6rem", color: activeIndex !== -1 ? pieData[activeIndex].fill : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3, fontWeight: activeIndex !== -1 ? 700 : 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                {activeIndex !== -1 ? pieData[activeIndex].name : "Total"}
+                                            </p>
+                                            <p style={{ fontSize: "1.05rem", fontWeight: 800, color: "var(--text-primary)" }}>
+                                                {activeIndex !== -1 ? fmt(pieData[activeIndex].value) : fmt(grandTotal)}
+                                            </p>
                                         </div>
                                     </div>
 
